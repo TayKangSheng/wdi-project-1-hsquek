@@ -1,5 +1,30 @@
 
 var board = []
+var numClicks = 0
+var cellsInPlay = []
+var stage = 0
+
+var gameLevels = [
+  // [rows, cols, colorArr, color, unfilledArr, valueArr],
+  [2, 4, [ [0, 1], [0, 2], [0, 3] ], 'brown', [], [0, 2, 3, 0, 0, 2, 5, 0] ],
+  [2, 3, [ [0, 1], [0, 2], [1, 1], [1, 2] ], 'brown', [], [0, 4, 4, 0, 0, 0] ],
+  [2, 2, [ [0, 1], [1, 0], [1, 1] ], 'brown', [], [0, 0, 9, 0] ],
+  [2, 3, [ [0, 0], [0, 1], [1, 1] ], 'green', [], [3, 8, 0, 0, 0, 4] ],
+  [3, 4, [ [0, 0], [0, 1], [0, 2], [1, 2] ], 'green', [[2, 0], [2, 3]], [4, 3, 3, 2, 0, 0, 0, 0, 0, 0]],
+  [4, 2, [ [0, 0], [1, 0], [2, 0], [3, 0] ], 'green', [], [0, 7, 3, 0, 3, 0, 3, 0]],
+  [4, 4, [ [0, 3], [1, 2], [2, 1] ], 'brown', [[0, 0], [3, 0], [3, 3]], [0, 1, 2, 0, 4, 4, 0, 0, 3, 4, 0, 0, 0] ],
+  [4, 2, [ [1, 0], [1, 1], [3, 1] ], 'brown', [], [0, 6, 0, 5, 0, 0, 6, 4] ],
+  [4, 3, [ [0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1] ], 'brown', [], [0, 0, 0, 4, 0, 7, 4, 6, 3, 0, 0, 0] ],
+  [2, 3, [ [0, 0], [0, 1], [1, 1], [1, 2] ], 'maroon', [], [0, 4, 8, 9, 0, 7] ],
+  [4, 3, [ [0, 1], [0, 2], [1, 0], [1, 1], [2, 1], [2, 2], [3, 1], [3, 2] ], 'maroon', [[0, 0], [3, 2]], [5, 2, 3, 1, 0, 6, 1, 5, 0, 9] ],
+  [3, 3, [ [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2] ], 'maroon', [], [1, 1, 2, 4, 5, 2, 4, 3, 2] ]
+  [3, 4, [ [0, 2], [1, 0], [1, 1], [1, 2], [2, 2] ], 'blue', [[0, 0], [0, 3]], [0, 2, 7, 4, 5, 0, 3, 0, 5, 4] ],
+  [4, 4, [ [1, 1], [1, 2], [2, 1], [2, 2] ], 'blue', [ [0, 0], [0, 1], [1, 3], [2, 0], [3, 2], [3, 3] ], [4, 2, 6, 7, 0, 0, 7, 3, 4, 3] ],
+  [3, 3, [ [1, 1], [2, 1], [2, 2] ], 'blue', [[0, 0], [0, 1], [1, 0]], [6, 0, 0, 9, 5, 4] ],
+  [4, 3, [ [0, 1], [1, 1], [2, 0], [2, 1], [2, 2], [3, 1] ], 'gold', [[0, 0], [3, 0]], [7, 0, 0, 0, 6, 7, 7, 4, 5, 0] ],
+  [3, 3, [ [0, 1], [0, 2], [1, 1], [2, 0], [2, 1] ], 'gold', [], [7, 7, 5, 0, 2, 0, 0, 9, 0] ],
+  [3, 4, [ [0, 2], [0, 3], [1, 0], [1, 1], [1, 3], [2, 2], [2, 3] ], 'gold', [ [0, 0], [2, 0] ] ]
+]
 
 function Node (value, coords, color, filled = true) {
   this.value = value
@@ -26,28 +51,28 @@ function legalMove (startCell, endCell) {
 }
 
 function merge (startCell, endCell) {
-  if (legalMove(startCell, endCell)) {
-    endCell.value += startCell.value
-    startCell.value = 0
-    return endCell.value
+  // if (legalMove(startCell, endCell)) {
+  endCell.value += startCell.value
+  startCell.value = 0
+  return endCell.value
     // startCell.value = 0
-  }
+  // }
 }
 
 function split (startCell, endCell) {
-  if (legalMove(startCell, endCell)) {
-    if (startCell.value % 2 === 0) {
-      endCell.value = startCell.value / 2
-      startCell.value = startCell.value / 2
-      return endCell.value
+  // if (legalMove(startCell, endCell)) {
+  if (startCell.value % 2 === 0) {
+    endCell.value = startCell.value / 2
+    startCell.value = startCell.value / 2
+    return endCell.value
       // startCell.value = startCell.value / 2
-    } else {
-      endCell.value = (startCell.value - 1) / 2
-      startCell.value = (startCell.value + 1) / 2
-      return endCell.value
+  } else {
+    endCell.value = (startCell.value - 1) / 2
+    startCell.value = (startCell.value + 1) / 2
+    return endCell.value
       // startCell.value = (startCell.value + 1) / 2
-    }
   }
+  // }
 }
 
 function checkWin (gameBoard) {
@@ -75,7 +100,6 @@ function checkWin (gameBoard) {
 
   return true
 }
-
 
 function makeGrid (rows, columns) {
   for (var i = 0; i < rows; i++) {
@@ -121,42 +145,27 @@ function setValues (valueArr) {
   }
 }
 
-function makeGame (rows, columns, colorArr, color, unfilledArr, valueArr) {
-  makeGrid(rows, columns)
-  setColors(colorArr, color)
-  setEmptyCell(unfilledArr)
-  setValues(valueArr)
-  phyGrid(board, rows, columns)
+function setGame (arr) {
+  makeGrid(arr[0], arr[1])
+  setColors(arr[2], arr[3])
+  setEmptyCell(arr[4])
+  setValues(arr[5])
+  phyGrid(board, arr[0], arr[1])
 }
 
-function restart () {
+function restart (level) {
   board = []
   numClicks = 0
-  makeGrid(3, 3)
-  setColors([[1, 1], [2, 2]], 'green')
-  setEmptyCell([[0, 1], [0, 2]])
-  setValues([0, 3, 3, 3, 0, 0, 3])
-  phyGrid(board, 3, 3)
+  setGame(gameLevels[level])
+  listener()
+  // startPlay()
 }
-// createBoard(3, 3, [[0, 0], [1, 1], [2, 2]], [[0, 1], [0, 2]])
-// console.log(board)
-// console.log(board)
-
-// console.log(checkWin(board))
-// console.log(board)
-// console.log(sum(board[4].coords))
-
-// board[5].value = 0
-// console.log(legalMove(board[8], board[5]))
-// split(board[8], board[5])
-// console.log(board[5].value)
-// console.log(board)
 
 var mainBoard = document.querySelector('.container')
 
 function phyGrid (gameboard, rows, columns) {
   var allSquares = document.querySelectorAll('.container > div')
-  console.log(allSquares.length)
+  // console.log(allSquares.length)
 
   while (mainBoard.hasChildNodes()) {
     mainBoard.removeChild(mainBoard.lastChild)
@@ -169,62 +178,77 @@ function phyGrid (gameboard, rows, columns) {
 
   for (var i = 0; i < board.length; i++) {
     var square = document.createElement('div')
-    console.log('adding square ' + i)
+    // console.log(square)
     square.setAttribute('data-num', i)
     square.textContent = board[i].value
     square.style.borderRadius = '50%'
     square.style.background = board[i].color
+    square.style.boxShadow = '2px 2px' + board[i].color
+    // console.log(board[i].filled)
+    if (!board[i].filled) {
+      square.style.visibility = 'hidden'
+    }
+    if (!board[i].value) {
+      square.textContent = ''
+    }
     mainBoard.appendChild(square)
   }
 }
 
-restart()
+restart(stage)
 
-var nodes = document.querySelectorAll('.container > div')
-var numClicks = 0
-var cellsInPlay = []
+
+// function listener() {
+//
+// }
 
 // console.log(nodes)
 // console.log(board[(nodes[1].getAttribute('data-num'))])
+var nodes = document.querySelectorAll('.container > div')
 
-nodes.forEach(function (node) {
-  node.addEventListener('click', function () {
-    console.log(board)
-    if (board[node.getAttribute('data-num')].filled) {
-      if (numClicks === 0) {
-        var cellOne = board[node.getAttribute('data-num')]
+function listener() {
+  nodes.forEach(function (node) {
+    node.addEventListener('click', function () {
+    // console.log(board)
+      if (board[node.getAttribute('data-num')].filled) {
+        if (numClicks === 0) {
+          var cellOne = board[node.getAttribute('data-num')]
         // console.log(cellOne)
-        cellsInPlay.push(cellOne)
-        numClicks++
-      } else if (numClicks === 1) {
-        var cellTwo = board[node.getAttribute('data-num')]
-        cellsInPlay.push(cellTwo)
-        numClicks++
-      }
-      if (numClicks === 2) {
-        if (legalMove(cellsInPlay[0], cellsInPlay[1])) {
-          if (cellsInPlay[1].value === 0) {
-            console.log(cellsInPlay[0])
-            split(cellsInPlay[0], cellsInPlay[1])
-            console.log(cellsInPlay[1])
-            nodes[board.indexOf(cellsInPlay[0])].textContent = cellsInPlay[0].value
-            nodes[board.indexOf(cellsInPlay[1])].textContent = cellsInPlay[1].value
-          } else {
-            merge(cellsInPlay[0], cellsInPlay[1])
-            nodes[board.indexOf(cellsInPlay[0])].textContent = cellsInPlay[0].value
-            nodes[board.indexOf(cellsInPlay[1])].textContent = cellsInPlay[1].value
-            // alert(checkWin(board))
+          cellsInPlay.push(cellOne)
+          numClicks++
+        } else if (numClicks === 1) {
+          var cellTwo = board[node.getAttribute('data-num')]
+          if (cellTwo !== cellOne) {
+            cellsInPlay.push(cellTwo)
+            numClicks++
           }
         }
+        if (numClicks === 2) {
+          if (legalMove(cellsInPlay[0], cellsInPlay[1])) {
+            if (cellsInPlay[1].value === 0) {
+            // console.log(cellsInPlay[0])
+              split(cellsInPlay[0], cellsInPlay[1])
+            // console.log(cellsInPlay[1])
+              nodes[board.indexOf(cellsInPlay[0])].textContent = cellsInPlay[0].value
+              nodes[board.indexOf(cellsInPlay[1])].textContent = cellsInPlay[1].value
+            } else {
+              merge(cellsInPlay[0], cellsInPlay[1])
+              nodes[board.indexOf(cellsInPlay[0])].textContent = cellsInPlay[0].value
+              nodes[board.indexOf(cellsInPlay[1])].textContent = cellsInPlay[1].value
+            }
+          }
         // console.log('Checkwin: ' + checkWin(board));
-        if (checkWin(board)) {
-          alert('game won')
-          restart()
-        } else {
-          numClicks = 0
-          cellsInPlay = []
+          if (checkWin(board)) {
+            alert('game won')
+            stage++
+            restart(stage)
+            // console.log(board)
+          } else {
+            numClicks = 0
+            cellsInPlay = []
+          }
         }
       }
-    }
+    })
   })
-})
+}
