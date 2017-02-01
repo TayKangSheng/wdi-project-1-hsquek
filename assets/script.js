@@ -26,11 +26,12 @@ var gameLevels = [
   [3, 4, [ [0, 2], [0, 3], [1, 0], [1, 1], [1, 3], [2, 2], [2, 3] ], 'gold', [ [0, 0], [2, 0] ] ]
 ]
 
-function Node (value, coords, color, filled = true) {
+function Node (value, coords, color, idNum, filled = true) {
   this.value = value
   this.coords = coords
   this.color = color
   this.filled = filled
+  this.idNum = idNum
   this.radius = 30
 }
 
@@ -102,10 +103,12 @@ function checkWin (gameBoard) {
 }
 
 function makeGrid (rows, columns) {
+  var count = 0
   for (var i = 0; i < rows; i++) {
     for (var j = 0; j < columns; j++) {
-      var newNode = new Node(undefined, [i, j], 'white')
+      var newNode = new Node(undefined, [i, j], 'white', count)
       board.push(newNode)
+      count++
     }
   }
 }
@@ -157,8 +160,6 @@ function restart (level) {
   board = []
   numClicks = 0
   setGame(gameLevels[level])
-  listener()
-  // startPlay()
 }
 
 var mainBoard = document.querySelector('.container')
@@ -176,7 +177,7 @@ function phyGrid (gameboard, rows, columns) {
   mainBoard.style.width = width + 'px'
   mainBoard.style.height = height + 'px'
 
-  for (var i = 0; i < board.length; i++) {
+  for (var i = 0; i < gameboard.length; i++) {
     var square = document.createElement('div')
     // console.log(square)
     square.setAttribute('data-num', i)
@@ -193,10 +194,12 @@ function phyGrid (gameboard, rows, columns) {
     }
     mainBoard.appendChild(square)
   }
+  var newChild = document.querySelectorAll('.container > div')
+  // console.log(newChild)
+  addListener(newChild)
 }
 
 restart(stage)
-
 
 // function listener() {
 //
@@ -206,18 +209,22 @@ restart(stage)
 // console.log(board[(nodes[1].getAttribute('data-num'))])
 var nodes = document.querySelectorAll('.container > div')
 
-function listener() {
-  nodes.forEach(function (node) {
-    node.addEventListener('click', function () {
+// function listener() {
+function addListener (arr) {
+  arr.forEach(function (item) {
+    item.addEventListener('click', function () {
     // console.log(board)
-      if (board[node.getAttribute('data-num')].filled) {
+      console.log(arr)
+      console.log(board)
+      console.log(this)
+      if (board[item.getAttribute('data-num')].filled) {
         if (numClicks === 0) {
-          var cellOne = board[node.getAttribute('data-num')]
+          var cellOne = board[item.getAttribute('data-num')]
         // console.log(cellOne)
           cellsInPlay.push(cellOne)
           numClicks++
         } else if (numClicks === 1) {
-          var cellTwo = board[node.getAttribute('data-num')]
+          var cellTwo = board[item.getAttribute('data-num')]
           if (cellTwo !== cellOne) {
             cellsInPlay.push(cellTwo)
             numClicks++
@@ -227,26 +234,32 @@ function listener() {
           if (legalMove(cellsInPlay[0], cellsInPlay[1])) {
             if (cellsInPlay[1].value === 0) {
             // console.log(cellsInPlay[0])
+              // console.log(arr[cellsInPlay[0].idNum])
+              // console.log(arr[cellsInPlay[1].idNum])
               split(cellsInPlay[0], cellsInPlay[1])
             // console.log(cellsInPlay[1])
-              nodes[board.indexOf(cellsInPlay[0])].textContent = cellsInPlay[0].value
-              nodes[board.indexOf(cellsInPlay[1])].textContent = cellsInPlay[1].value
+
+              arr[cellsInPlay[0].idNum].textContent = cellsInPlay[0].value
+              arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
             } else {
+              // console.log(arr[cellsInPlay[0].idNum])
+              // console.log(arr[cellsInPlay[1].idNum])
               merge(cellsInPlay[0], cellsInPlay[1])
-              nodes[board.indexOf(cellsInPlay[0])].textContent = cellsInPlay[0].value
-              nodes[board.indexOf(cellsInPlay[1])].textContent = cellsInPlay[1].value
+              arr[cellsInPlay[0].idNum].textContent = cellsInPlay[0].value
+              arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
             }
           }
-        // console.log('Checkwin: ' + checkWin(board));
+        
           if (checkWin(board)) {
             alert('game won')
             stage++
             restart(stage)
-            // console.log(board)
-          } else {
-            numClicks = 0
-            cellsInPlay = []
+
           }
+
+          numClicks = 0
+          cellsInPlay = []
+
         }
       }
     })
