@@ -76,13 +76,7 @@ function split (startCell, endCell) {
   // }
 }
 
-function checkWin (gameBoard) {
-  var solutionCells = gameBoard.filter(function (gridCell) {
-    if (gridCell.color !== 'white' && gridCell.filled) {
-      return gridCell
-    }
-  })
-
+function objective (gameBoard) {
   var gameValues = gameBoard.map(function (gridCell) {
     if (gridCell.value === undefined) {
       return 0
@@ -91,10 +85,26 @@ function checkWin (gameBoard) {
     }
   })
 
-  var average = sum(gameValues) / solutionCells.length
+  var avg = sum(gameValues) / solnCells(gameBoard).length
+  return avg
+}
+
+function solnCells (gameBoard) {
+  var solutionCells = gameBoard.filter(function (gridCell) {
+    if (gridCell.color !== 'white' && gridCell.filled) {
+      return gridCell
+    }
+  })
+  return solutionCells
+}
+
+function checkWin (gameBoard) {
+  var solutionCells = solnCells(gameBoard)
+
+  var target = objective(gameBoard)
+
   for (var i = 0; i < solutionCells.length; i++) {
-    // console.log(i + 'th cell value: ' + solutionCells[i].value)
-    if (solutionCells[i].value !== average) {
+    if (solutionCells[i].value !== target) {
       return false
     }
   }
@@ -163,6 +173,8 @@ function restart (level) {
 }
 
 var mainBoard = document.querySelector('.container')
+
+
 
 function phyGrid (gameboard, rows, columns) {
   var allSquares = document.querySelectorAll('.container > div')
@@ -249,17 +261,15 @@ function addListener (arr) {
               arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
             }
           }
-        
+
           if (checkWin(board)) {
             alert('game won')
             stage++
             restart(stage)
-
           }
 
           numClicks = 0
           cellsInPlay = []
-
         }
       }
     })
