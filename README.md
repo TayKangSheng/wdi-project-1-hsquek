@@ -2,7 +2,7 @@
 [Play it here] (https://wdi-sg.github.io/wdi-project-1-hsquek/)
 
 #### Inspired by Eko Mirhard's original creation
-[Download the original here] (https://play.google.com/store/apps/details?id=com.zealtopia.node&hl=en) 
+[Download the original here] (https://play.google.com/store/apps/details?id=com.zealtopia.node&hl=en)
 
 
 ## Description
@@ -32,20 +32,3 @@ This game was created to fulfil Project 1 of GA's Web Development Immersive (SG)
 3. Create level/difficulty selector
 4. Create level previews
 5. Insert move animation
-
-## Constructors
-**Node**
-
-Creates an object with the following properties:
-  * value
-  * id
-  * grid coordinates
-  * grid color
-  * radius
-
-
-## Functions
-**sum(arr)**
-Returns sum of an array
-
-**
