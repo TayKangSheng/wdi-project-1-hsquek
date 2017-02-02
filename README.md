@@ -11,20 +11,18 @@ Read Me Contents
 
 
 ## How to Play
-Divide even numbered nodes by clicking on an empty node.
->> Even numbers divide evenly. Odd numbers divide unevenly.
+1. Divide even numbered nodes by clicking on an empty node.
+..* Even numbers divide evenly. Odd numbers divide unevenly.
 
 
-Sum numbers by selecting any numbered nodes.
->> Nodes cannot be combined if the sum exceeds 9.
+2. Sum numbers by selecting any numbered nodes.
+..* Nodes cannot be combined if the sum exceeds 9.
 
 
-
-Diagonal moves are not allowed
-
+3. Diagonal moves are not allowed
 
 
-Form the target numbers on the colored nodes.
+4. Form the target numbers on the colored nodes.
 
 
 
