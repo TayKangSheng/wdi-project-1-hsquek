@@ -12,7 +12,7 @@ var gameLevels = [
   [2, 2, [ [0, 1], [1, 0], [1, 1] ], '#DBD56E', [], [0, 0, 9, 0], 6 ],
   [2, 3, [ [0, 0], [0, 1], [1, 1] ], '#FE5F55', [], [3, 8, 0, 0, 0, 4], 6 ],
   [3, 4, [ [0, 0], [0, 1], [0, 2], [1, 2] ], '#FE5F55', [[2, 0], [2, 3]], [4, 3, 3, 2, 0, 0, 0, 0, 0, 0], 6 ],
-  [4, 2, [ [0, 0], [1, 0], [2, 0], [3, 0] ], '#FE5F55', [], [0, 7, 3, 0, 3, 0, 3, 0] ,6 ],
+  [4, 2, [ [0, 0], [1, 0], [2, 0], [3, 0] ], '#FE5F55', [], [0, 7, 3, 0, 3, 0, 3, 0], 6 ],
   [4, 4, [ [0, 3], [1, 2], [2, 1] ], '#345995', [[0, 0], [3, 0], [3, 3]], [0, 1, 2, 0, 4, 4, 0, 0, 3, 4, 0, 0, 0], 7 ],
   [4, 2, [ [1, 0], [1, 1], [3, 1] ], '#345995', [], [0, 6, 0, 5, 0, 0, 6, 4], 7 ],
   [4, 3, [ [0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1] ], '#345995', [], [0, 0, 0, 4, 0, 7, 4, 6, 3, 0, 0, 0], 7 ],
@@ -28,7 +28,6 @@ var gameLevels = [
 ]
 
 // var movesPerLevel = [3, 2, 6, 6, 6, 6, 7, 7, 7, 10, 12, 9, 12, 12, 11, 16, 12, 12]
-
 
 function Node (value, coords, color, idNum, filled = true) {
   this.value = value
@@ -109,9 +108,13 @@ function checkWin (gameBoard) {
   return true
 }
 
-function gameOver(movesLeft) {
-  if (!movesLeft) {
-    alert('Out of moves!')
+function gameOver (movesLeft) {
+  // console.log('checkwin ' + checkWin(board));
+  // console.log('!checkwin ' + !checkWin(board));
+  // console.log('check moves ' + !(!moves));
+  // console.log('check moves and win ' + (!movesLeft && !checkWin(board)));
+  if (movesLeft === 0) {
+    setTimeout(function () { alert('Out of moves!') }, 500)
     return true
   } else {
     return false
@@ -234,7 +237,44 @@ function phyGrid (gameBoard, rows, columns) {
 function updateAnnouncer () {
   var announcer = document.querySelector('.goal')
   announcer.textContent = 'Obtain ' + objective(board) + ' in each colored node. Moves remaining: ' + moves
-  gameOver(moves)
+  // gameOver(moves)
+}
+
+function updatePlayingCells (item) {
+  if (numClicks === 0) {
+    var cellOne = board[item.getAttribute('data-num')]
+    cellsInPlay.push(cellOne)
+    numClicks++
+  } else if (numClicks === 1) {
+    var cellTwo = board[item.getAttribute('data-num')]
+    if (cellTwo !== cellOne) {
+      cellsInPlay.push(cellTwo)
+      numClicks++
+    }
+  }
+}
+
+function evaluatePlayingCells (arr) {
+  if (legalMove(cellsInPlay[0], cellsInPlay[1])) {
+    moves--
+    updateAnnouncer()
+    if (cellsInPlay[1].value === 0) {
+      split(cellsInPlay[0], cellsInPlay[1])
+
+      arr[cellsInPlay[0].idNum].textContent = cellsInPlay[0].value
+      arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
+    } else {
+      merge(cellsInPlay[0], cellsInPlay[1])
+      arr[cellsInPlay[0].idNum].textContent = ''
+      arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
+    }
+  }
+}
+
+function announceWin () {
+    setTimeout(function () { alert('Congratulations, you move on to the next level!') }, 500)
+    stage++
+    setTimeout(function () {restart(stage)}, 500)
 }
 
 restart(stage)
@@ -245,38 +285,15 @@ function addListener (arr) {
   arr.forEach(function (item) {
     item.addEventListener('click', function () {
       if (board[item.getAttribute('data-num')].filled) {
-        if (numClicks === 0) {
-          var cellOne = board[item.getAttribute('data-num')]
-          cellsInPlay.push(cellOne)
-          numClicks++
-        } else if (numClicks === 1) {
-          var cellTwo = board[item.getAttribute('data-num')]
-          if (cellTwo !== cellOne) {
-            cellsInPlay.push(cellTwo)
-            numClicks++
-          }
-        }
+        updatePlayingCells(item)
 
         if (numClicks === 2) {
-          if (legalMove(cellsInPlay[0], cellsInPlay[1])) {
-            moves--
-            updateAnnouncer()
-            if (cellsInPlay[1].value === 0) {
-              split(cellsInPlay[0], cellsInPlay[1])
-
-              arr[cellsInPlay[0].idNum].textContent = cellsInPlay[0].value
-              arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
-            } else {
-              merge(cellsInPlay[0], cellsInPlay[1])
-              arr[cellsInPlay[0].idNum].textContent = ''// cellsInPlay[0].value
-              arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
-            }
-          }
+          evaluatePlayingCells(arr)
 
           if (checkWin(board)) {
-            alert('game won') // make next level button visible
-            stage++
-            restart(stage)
+            announceWin()
+          } else if (!checkWin(board) && !moves) {
+            gameOver(moves)
           }
 
           numClicks = 0
