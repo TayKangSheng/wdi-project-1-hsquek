@@ -1,38 +1,86 @@
-@import url('https://fonts.googleapis.com/css?family=Slabo+27px');
+
 @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed|Slabo+27px');
+@import url('https://fonts.googleapis.com/css?family=Quicksand');
+@import url('https://fonts.googleapis.com/css?family=Lato|Quicksand|Roboto');
 
 h1 {
-  font-family: 'Slabo 27px', serif;
+  font-family: 'Quicksand', sans-serif;
   font-size: 80px;
-  text-align: center
+  text-align: center;
+  color: #03CEA4
 }
 
 body {
-  background: #808080;
+  background: #7D7C84;
+  display: inline;
+  position: relative;
+  /*margin: 0 auto*/
 }
 
 .container {
-  margin: 0 auto;
+  margin: 10px auto;
+  padding: 50px;
   display: flex;
-  flex-wrap: wrap
+  flex-wrap: wrap;
+  /*float: left;*/
+  /*border: 1px solid black;*/
+  box-sizing: border-box;
+  /*display: block;*/
+  width = 80%;
+  position: relative
+
 }
 
-.container > div {
+.grid {
+  /*border: 2px solid black;*/
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  float: right;
+  padding: 0;
+  /*position: relative*/
+
+}
+
+.grid > div {
   width: 80px;
   height: 80px;
-  border: 1px solid #8D99AE;
+  border: 2px solid black; /*#8D99AE;*/
   line-height: 85px;
   margin: 0 auto;
   text-align: center;
-  box-shadow: 2px 2px;
+  box-shadow: 3px 3px;
   visibility: visible;
   font-family: 'Roboto Condensed', sans-serif;
   font-size: 40px
-  /*border-radius: 100%;
-  font-size: 20px*/
 }
 
-aside {
+.instructions {
   float: right;
+  padding: 0;
+  /*border: 1px solid black;*/
+  margin-right: 100px;
+  margin-top: 0;
+  font-family: 'Lato', sans-serif;
+  line-height: 30px;
+  box-sizing: border-box;
+  width: 40%;
+  /*position: absolute;*/
+}
 
+.goal {
+  font-family: 'Lato', sans-serif;
+  margin: 0 auto;
+  /*border: 1px solid black;*/
+  text-align: center;
+  font-size: 36px
+}
+
+.restart {
+  /*margin: 0 auto*/
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  box-shadow: 3px 3px;
+  border: none
 }

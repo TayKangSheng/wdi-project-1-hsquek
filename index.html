@@ -3,16 +3,39 @@
   <head>
     <meta charset="utf-8">
     <title>Noda</title>
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
     <link href="./assets/style.css" type="text/css" rel="stylesheet">
   </head>
   <body>
     <h1>Noda</h1>
-    <div class="container">
+    <!-- <button class="restart">Try again</button> -->
+    <div class='goal'>
+
     </div>
-    <aside>
-      Play Noda
-      <p> Objectives:
-    </aside>
+    <div class="container">
+      <button class="restart">Try again</button>
+        <div class='grid'>
+        </div>
+        <div class='instructions'>
+          <h2>How to Play</h2>
+          <ol>
+            <li>Divide even-numbered nodes by clicking on an empty node</li>
+            <ul>
+              <li>Even numbers divide evenly; odd numbers divide unevenly</li>
+            </ul>
+            <li>Sum numbers by selecting any numbered nodes</li>
+            <ul>
+              <li>Nodes cannot be combined if sum exceeds 9</li>
+            </ul>
+            <li><strong>Objective</strong>: Form target numbers on colored nodes</li>
+          </ol>
+        </div>
+
+
+
+    </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
     <script src="./assets/script.js"></script>
 
