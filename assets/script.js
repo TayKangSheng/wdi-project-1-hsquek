@@ -1,4 +1,3 @@
-// add a move counter
 var board = []
 var numClicks = 0
 var cellsInPlay = []
@@ -43,7 +42,7 @@ function sum (arr) {
 }
 
 function legalMove (startCell, endCell) {
-  if ((startCell.filled && endCell.filled) && moves) {
+  if ((startCell.filled && endCell.filled) && moves && startCell.value > 0) {
     if (Math.abs(sum(startCell.coords) - sum(endCell.coords)) === 1) {
       if (startCell.value + endCell.value <= 9 && startCell.value + endCell.value > 1) {
         return true
@@ -109,10 +108,6 @@ function checkWin (gameBoard) {
 }
 
 function gameOver (movesLeft) {
-  // console.log('checkwin ' + checkWin(board));
-  // console.log('!checkwin ' + !checkWin(board));
-  // console.log('check moves ' + !(!moves));
-  // console.log('check moves and win ' + (!movesLeft && !checkWin(board)));
   if (movesLeft === 0) {
     setTimeout(function () { alert('Out of moves!') }, 500)
     return true
@@ -240,6 +235,11 @@ function updateAnnouncer () {
   // gameOver(moves)
 }
 
+function resetPlayingCells() {
+  numClicks = 0
+  cellsInPlay = []
+}
+
 function updatePlayingCells (item) {
   if (numClicks === 0) {
     var cellOne = board[item.getAttribute('data-num')]
@@ -250,6 +250,8 @@ function updatePlayingCells (item) {
     if (cellTwo !== cellOne) {
       cellsInPlay.push(cellTwo)
       numClicks++
+    } else {
+      resetPlayingCells()
     }
   }
 }
@@ -296,8 +298,7 @@ function addListener (arr) {
             gameOver(moves)
           }
 
-          numClicks = 0
-          cellsInPlay = []
+          resetPlayingCells()
         }
       }
     })
