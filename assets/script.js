@@ -297,6 +297,7 @@ function undoLastMove (arr) {
     var newChildren = document.querySelectorAll('.grid > div')
     computePlayingCells(newChildren, lastMove)
     moves++
+    resetPlayingCells()
     updateAnnouncer()
   }
 }
