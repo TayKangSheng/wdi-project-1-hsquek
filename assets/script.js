@@ -35,7 +35,7 @@ function Node (value, coords, color, idNum, filled = true) {
   this.color = color
   this.filled = filled
   this.idNum = idNum
-  this.radius = 30
+  // this.radius = 30
 }
 
 function sum (arr) {
@@ -201,13 +201,13 @@ function removeAllChildren () {
 function makeNewChildren (gameBoard) {
   for (var i = 0; i < gameBoard.length; i++) {
     var square = document.createElement('div')
-    // console.log(square)
+
     square.setAttribute('data-num', i)
     square.textContent = gameBoard[i].value
     square.style.borderRadius = '50%'
     square.style.background = gameBoard[i].color
     square.style.boxShadow = '2px 2px' // + gameBoard[i].color
-    // console.log(board[i].filled)
+
     if (!gameBoard[i].filled) {
       square.style.visibility = 'hidden'
     }
@@ -234,22 +234,24 @@ function phyGrid (gameBoard, rows, columns) {
 function updateAnnouncer () {
   var announcer = document.querySelector('.goal')
   announcer.textContent = 'Obtain ' + objective(board) + ' in each colored node. Moves remaining: ' + moves
-  // gameOver(moves)
 }
 
-function resetPlayingCells() {
+function resetPlayingCells () {
   numClicks = 0
   cellsInPlay = []
 }
 
 function updatePlayingCells (item) {
+  // var cellOne, cellTwo
   if (numClicks === 0) {
     var cellOne = board[item.getAttribute('data-num')]
-    cellsInPlay.push(cellOne)
-    numClicks++
+    if (cellOne.value) {
+      cellsInPlay.push(cellOne)
+      numClicks++
+    }
   } else if (numClicks === 1) {
     var cellTwo = board[item.getAttribute('data-num')]
-    if (cellTwo !== cellOne) {
+    if (cellTwo.idNum !== cellsInPlay[0].idNum) {
       cellsInPlay.push(cellTwo)
       cellsPlayed.push(cellsInPlay)
       numClicks++
@@ -263,17 +265,7 @@ function evaluatePlayingCells (childArr, cellsArr) {
   if (legalMove(cellsArr[0], cellsArr[1])) {
     moves--
     updateAnnouncer()
-    // if (cellsInPlay[1].value === 0) {
-    //   split(cellsInPlay[0], cellsInPlay[1])
-    //
-    //   arr[cellsInPlay[0].idNum].textContent = cellsInPlay[0].value
-    //   arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
-    // } else {
-    //   merge(cellsInPlay[0], cellsInPlay[1])
-    //   arr[cellsInPlay[0].idNum].textContent = ''
-    //   arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
-    // }
-    computePlayingCells (childArr, cellsInPlay)
+    computePlayingCells(childArr, cellsInPlay)
   }
 }
 
@@ -291,21 +283,23 @@ function computePlayingCells (childArr, cellsArr) {
 }
 
 function undoLastMove (arr) {
-  if (arr.length) {
+  if (arr.length > 0) {
     var lastMove = arr.pop()
     lastMove.reverse()
+    // if (legalMove(lastMove[0], lastMove[1])) {
     var newChildren = document.querySelectorAll('.grid > div')
     computePlayingCells(newChildren, lastMove)
     moves++
     resetPlayingCells()
     updateAnnouncer()
+    // }
   }
 }
 
 function announceWin () {
-    setTimeout(function () { alert('Congratulations, you move on to the next level!') }, 500)
-    stage++
-    setTimeout(function () {restart(stage)}, 500)
+  setTimeout(function () { alert('Congratulations, you move on to the next level!') }, 500)
+  stage++
+  setTimeout(function () { restart(stage) }, 500)
 }
 
 restart(stage)
