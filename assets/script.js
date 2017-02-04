@@ -3,6 +3,7 @@ var numClicks = 0
 var cellsInPlay = []
 var stage = 0
 var moves = 0
+var cellsPlayed = []
 
 var gameLevels = [
   // [rows, cols, colorArr, color, unfilledArr, valueArr, moves],
@@ -108,7 +109,7 @@ function checkWin (gameBoard) {
 }
 
 function gameOver (movesLeft) {
-  if (movesLeft === 0) {
+  if (!movesLeft) {
     setTimeout(function () { alert('Out of moves!') }, 500)
     return true
   } else {
@@ -178,6 +179,7 @@ function setGame (arr) {
 function restart (level) {
   board = []
   numClicks = 0
+  cellsPlayed = []
   setGame(gameLevels[level])
 }
 
@@ -223,9 +225,9 @@ function phyGrid (gameBoard, rows, columns) {
 
   makeNewChildren(gameBoard)
 
-  var newChild = document.querySelectorAll('.grid > div')
+  var newChildren = document.querySelectorAll('.grid > div')
   // console.log(newChild)
-  addListener(newChild)
+  addListener(newChildren)
   updateAnnouncer()
 }
 
@@ -249,6 +251,7 @@ function updatePlayingCells (item) {
     var cellTwo = board[item.getAttribute('data-num')]
     if (cellTwo !== cellOne) {
       cellsInPlay.push(cellTwo)
+      cellsPlayed.push(cellsInPlay)
       numClicks++
     } else {
       resetPlayingCells()
@@ -256,20 +259,45 @@ function updatePlayingCells (item) {
   }
 }
 
-function evaluatePlayingCells (arr) {
-  if (legalMove(cellsInPlay[0], cellsInPlay[1])) {
+function evaluatePlayingCells (childArr, cellsArr) {
+  if (legalMove(cellsArr[0], cellsArr[1])) {
     moves--
     updateAnnouncer()
-    if (cellsInPlay[1].value === 0) {
-      split(cellsInPlay[0], cellsInPlay[1])
+    // if (cellsInPlay[1].value === 0) {
+    //   split(cellsInPlay[0], cellsInPlay[1])
+    //
+    //   arr[cellsInPlay[0].idNum].textContent = cellsInPlay[0].value
+    //   arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
+    // } else {
+    //   merge(cellsInPlay[0], cellsInPlay[1])
+    //   arr[cellsInPlay[0].idNum].textContent = ''
+    //   arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
+    // }
+    computePlayingCells (childArr, cellsInPlay)
+  }
+}
 
-      arr[cellsInPlay[0].idNum].textContent = cellsInPlay[0].value
-      arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
-    } else {
-      merge(cellsInPlay[0], cellsInPlay[1])
-      arr[cellsInPlay[0].idNum].textContent = ''
-      arr[cellsInPlay[1].idNum].textContent = cellsInPlay[1].value
-    }
+function computePlayingCells (childArr, cellsArr) {
+  if (cellsArr[1].value === 0) {
+    split(cellsArr[0], cellsArr[1])
+
+    childArr[cellsArr[0].idNum].textContent = cellsArr[0].value
+    childArr[cellsArr[1].idNum].textContent = cellsArr[1].value
+  } else {
+    merge(cellsArr[0], cellsArr[1])
+    childArr[cellsArr[0].idNum].textContent = ''
+    childArr[cellsArr[1].idNum].textContent = cellsArr[1].value
+  }
+}
+
+function undoLastMove (arr) {
+  if (arr.length) {
+    var lastMove = arr.pop()
+    lastMove.reverse()
+    var newChildren = document.querySelectorAll('.grid > div')
+    computePlayingCells(newChildren, lastMove)
+    moves++
+    updateAnnouncer()
   }
 }
 
@@ -290,7 +318,7 @@ function addListener (arr) {
         updatePlayingCells(item)
 
         if (numClicks === 2) {
-          evaluatePlayingCells(arr)
+          evaluatePlayingCells(arr, cellsInPlay)
 
           if (checkWin(board)) {
             announceWin()
@@ -309,4 +337,10 @@ var restartBtn = document.querySelector('.restart')
 
 restartBtn.addEventListener('click', function () {
   restart(stage)
+})
+
+var undoBtn = document.querySelector('.undo')
+
+undoBtn.addEventListener('click', function () {
+  undoLastMove(cellsPlayed)
 })
