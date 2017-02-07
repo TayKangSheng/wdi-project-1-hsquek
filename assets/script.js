@@ -3,7 +3,7 @@ var numClicks = 0
 var cellsInPlay = []
 var stage = 0
 var moves = 0
-var cellsPlayed = []
+var cellsPlayed = [] // logs values of played cells
 
 var gameLevels = [
   // [rows, cols, colorArr, color, unfilledArr, valueArr, moves],

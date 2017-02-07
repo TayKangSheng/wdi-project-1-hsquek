@@ -28,7 +28,7 @@ This game was created to fulfil Project 1 of GA's Web Development Immersive (SG)
 
 ## Future improvements
 1. Introduce namespacing
-2. ~~Create undo move button~~
+2. ~~Create undo move button~~ Debug undo move button
 3. Create level/difficulty selector
 4. Create level previews
 5. Insert move animation
