@@ -1,5 +1,5 @@
 # Noda Lite
-[Play it here] (https://wdi-sg.github.io/wdi-project-1-hsquek/)
+[Play it here] (https://hsquek.github.io/wdi-project-1-hsquek/)
 
 #### Inspired by Eko Mirhard's original creation
 [Download the original here] (https://play.google.com/store/apps/details?id=com.zealtopia.node&hl=en)
